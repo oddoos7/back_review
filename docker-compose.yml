@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: review-service-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: krma300147!
+      MYSQL_DATABASE: review_management
+      MYSQL_USER: review_user
+      MYSQL_PASSWORD: kkckdtjf!
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  menu-service:
+    image: review-service # Docker 이미지 이름
+    container_name: review-service-app
+    build: . # 현재 디렉토리의 Dockerfile을 사용하여 이미지 빌드
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/review_user?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_USERNAME: review_user
+      SPRING_DATASOURCE_PASSWORD: kkckdtjf!
+    depends_on:
+      - mysql
+volumes:
+  mysql_data:
